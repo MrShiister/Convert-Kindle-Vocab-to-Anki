@@ -70,3 +70,7 @@ The script takes the ID of the word from `lookups` to find the actual word and i
 
 <div style='color: white;' class='spoiler'>{{Example Sentence}}</div>
 ```
+
+## Future Work
+* Automate extracting tables from database
+* Parse the list for new vocabs only
