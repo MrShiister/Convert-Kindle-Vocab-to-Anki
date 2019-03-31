@@ -8,7 +8,7 @@ def get_meaning(json):
         value = json["meaning"][part_of_speech][0]["definition"]
         return value
     except:
-        return ""
+        return "Error: Definition not found"
 
 def get_phonetic(json):
     try:
@@ -17,6 +17,7 @@ def get_phonetic(json):
     except:
         return ""
 
+# if __name__ == '__main__':
 def do_not_execute():
     link = "https://googledictionaryapi.eu-gb.mybluemix.net/?define=Brussels&lang=en"
     response = urlopen(link)
@@ -24,6 +25,7 @@ def do_not_execute():
     meaning = get_meaning(def_json[0])
     
 
+# def do_not_execute():
 if __name__ == '__main__':
     words_dict={}
 
@@ -51,8 +53,8 @@ if __name__ == '__main__':
                 try:
                     response = urlopen(link)
                 except:
-                    meaning = "Error"
-                    phonetic = "Error"
+                    meaning = "Error: Page not found"
+                    phonetic = "Error: Page not found"
                 else:
                     def_json = json.loads(response.read())
                     meaning = get_meaning(def_json[0])

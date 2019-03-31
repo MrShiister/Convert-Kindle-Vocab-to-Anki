@@ -27,6 +27,15 @@ The script takes the ID of the word from `lookups` to find the actual word and i
 3. Run .py script.
 4. Import the output file through Anki, make a card format with these 4 fields, and import, allowing HTML.
 
+### Bugs
+The Google API does not contain information for all words. `Error:` is written in the tsv instead.
+
+## Future Work
+* Automate extracting tables from database
+* Using Merriam-webster dictionary's API
+* Parse the list for new vocabs only
+
+
 ## Bonus! My Anki Vocab Card Fields
 ### Front Template
 ```HTML
@@ -71,6 +80,3 @@ The script takes the ID of the word from `lookups` to find the actual word and i
 <div style='color: white;' class='spoiler'>{{Example Sentence}}</div>
 ```
 
-## Future Work
-* Automate extracting tables from database
-* Parse the list for new vocabs only
