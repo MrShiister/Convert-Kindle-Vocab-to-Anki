@@ -65,6 +65,7 @@ if __name__ == '__main__':
                     word_tsv = "<big class=\"word\">{}</big>".format(word)
                     phonetic_tsv = "<small class=\"ipa\">{}</small>".format(phonetic)
                     eg_tsv = row["usage"].replace(word, "<b>{}</b>".format(word))
+                    eg_tsv = eg_tsv.strip('"')
 
                     print(word_tsv)
                     print(phonetic_tsv)
