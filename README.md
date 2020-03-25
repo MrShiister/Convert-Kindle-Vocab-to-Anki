@@ -23,8 +23,8 @@ Create a new note type for Anki for the import.
 
 #### Front Template
 ```HTML
-{{Word}}<br>
-{{Pronunciation}}<br>
+<big class="word">{{Word}}</big><br>
+<small class="ipa">{{Pronunciation}}</small><br>
 
 <hr>
 <div class='spoiler'>{{Example Sentence}}</div>
@@ -51,8 +51,8 @@ Create a new note type for Anki for the import.
 
 #### Back Template
 ```HTML
-{{Word}}<br>
-{{Pronunciation}}<br>
+<big class="word">{{Word}}</big><br>
+<small class="ipa">{{Pronunciation}}</small><br>
 
 <hr>
 {{Example Sentence}}
