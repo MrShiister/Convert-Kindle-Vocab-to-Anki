@@ -4,9 +4,9 @@ The purpose of this project is for porting the vocabs you learned from your Kind
 
 In particular, this script converts `vocab.db` into a format Anki can understand and import.
 
-|![Front of the card](anki_front.png)|![Hover to reveal example sentence](anki_front_hover.png)|![Back of the card](anki_back.png)|
-|-|-|
-|Front of the card|Hover to reveal example sentence|Back of the card|
+| ![Front of the card](anki_front.png) | ![Hover to reveal example sentence](anki_front_hover.png) | ![Back of the card](anki_back.png) |
+| ------------------------------------ | --------------------------------------------------------- | ---------------------------------- |
+| Front of the card                    | Hover to reveal example sentence                          | Back of the card                   |
 
 ### In Kindle
 Your Kindle records down each word you search for and you can review them in Vocab Builder. These words are written into the database `kindle:/system/vocab.db`, specifically in the `LOOKUPS` database table. The ID and context of the word are cross-referenced to the `WORDS` database table.
