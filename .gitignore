@@ -1,4 +1,3 @@
-.tsv
-.nr
-.swp
-*.swp
+*.db
+.vscode
+*.tsv
