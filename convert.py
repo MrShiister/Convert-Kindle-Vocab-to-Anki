@@ -75,6 +75,8 @@ def print_words(args):
 def get_lookups(vocabdb, timestamp):
     con = sqlite3.connect(vocabdb)
     cur = con.cursor()
+    # Add 1 to the timestamp to search words after the timestamp argument.
+    timestamp = timestamp + 1
 
     try:
         cur.execute("""SELECT word, usage
@@ -114,7 +116,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-o", "--outfile", type=argparse.FileType("w+", encoding="UTF-8"), default="import.tsv", help="Path to outfile")
     parser.add_argument("-d", "--vocabdb", default="./vocab.db", metavar="/path/to/vocab.db", help="Path to vocab.db")
-    parser.add_argument("-f", "--start_from", default=0, metavar="epoch_time_in_milli", help="Only find words since the specified Epoch timestamp in milliseconds (13 digits). Useful if you have already used this previously and only want to import new words. e.g. 1571009240989")
+    parser.add_argument("-f", "--after", default=0, type=int, metavar="epoch_time_in_milli", help="Only find words after the specified Epoch timestamp in milliseconds (13 digits). Useful if you have already used this previously and only want to import new words. e.g. 1571009240989")
     parser.set_defaults(func=export_words)
 
     subparsers = parser.add_subparsers()

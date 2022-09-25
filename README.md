@@ -9,7 +9,7 @@ In particular, this script converts `vocab.db` into a format Anki can understand
 | Front of the card                    | Hover to reveal example sentence                          | Back of the card                   |
 
 ### In Kindle
-Your Kindle records down each word you highlight to view its definition, and you can review them in Kindle's in-built Vocab Builder. These words are written into the database `kindle:/system/vocab.db`, specifically in the `LOOKUPS` database table. The word ID and usage of the word are cross-referenced to the `WORDS` database table.
+Your Kindle records down each word you highlight to view its definition, and you can review them in Kindle's in-built Vocab Builder. These words are written into the database `kindle:/system/vocabulary/vocab.db`, specifically in the `LOOKUPS` database table. The word ID and usage of the word are cross-referenced to the `WORDS` database table.
 
 ### In Anki
 Create a new note type for Anki for the import.
@@ -76,10 +76,12 @@ Create a new note type for Anki for the import.
 The script takes the ID of the word from `LOOKUPS` to find the actual word and its context from `WORDS`, queries the API for phonetics and meaning, and writes the 4 fields, tab-separated. However, Anki does not follow the proper format of a `.tsv` file as quotes are taken as is without escaping.
 
 ## How to use
-1. Copy your Kindle database file `vocab.db` to an accessible location.
+1. Copy your Kindle database file `kindle:/system/vocabulary/vocab.db` to an accessible location.
 2. Set up your Anki with the new note type as above.
 3. Run `convert.py`. Use `--help` for usage information.
 4. Import `import.tsv` in Anki, pick the note type you made, and allow HTML in fields.
+
+![Import Dialog](anki_import.png)
 ## --help
 ```
 usage: convert.py [-h] [--log {debug,info,warning,error,critical}] [-k KEY] [-o OUTFILE] [-d /path/to/vocab.db] [-f epoch_time_in_milli] {list,l} ...
@@ -99,7 +101,7 @@ options:
                         Path to outfile
   -d /path/to/vocab.db, --vocabdb /path/to/vocab.db
                         Path to vocab.db
-  -f epoch_time_in_milli, --start_from epoch_time_in_milli
+  -f epoch_time_in_milli, --after epoch_time_in_milli
                         Only find words since the specified Epoch timestamp in milliseconds (13 digits). Useful if you have already used this previously and only want to import new words. e.g. 1571009240989
 ```
 ```
@@ -108,7 +110,12 @@ usage: convert.py list [-h] [word ...]
 positional arguments:
   word        Space-separated words to search for the definitions. Use quotes for words with spaces. Leave blank to see sample.
 ```
-
+## Example Usage
+```sh
+[me@mycom anki]$ python3 convert.py -d ./vocabs/vocab.db -o ./imports/import.tsv
+[*]     INFO: Searching all words since 2021-05-02 23:45:28.551000: 420 words
+[*]  WARNING: taxidermied: Definition not found. Searching taxidermies instead...
+```
 ## Additional Details
 - The script has a `list` subcommand that enables you to input a list of words to search the API instead of reading from a database.
 
@@ -116,7 +123,9 @@ positional arguments:
 
 - You may want to use the `list` subcommand after you find the correct words. It will append to the `.tsv` file.
 
-- If you have imported Kindle vocabs into Anki before, you may want to use `-f` to filter words by timestamp via the SQL query.
+- If you have imported Kindle vocabs into Anki before, you may want to use `-f` to filter words by timestamp via the SQL query. You can get this timestamp by opening the `LOOKUPS` table in the database. I considered implementing it by searching for a word instead of a timestamp, but it gets complicated if the word appears multiple times in the table.
+
+- The `-f` flag is optional if you intend to import into Anki with the "Ignore lines where first field matches existing note" option.
 ## Bulk Editing Your Anki Database When You Suck At SQL
 It is possible to edit all your cards in bulk with the Anki Desktop client and a database editor.
 1. Backup your Anki database file in `%AppData%\Anki2\User\collection.anki2`.
