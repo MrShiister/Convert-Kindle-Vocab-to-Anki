@@ -79,14 +79,17 @@ The script takes the ID of the word from `LOOKUPS` to find the actual word and i
 1. Copy your Kindle database file `kindle:/system/vocabulary/vocab.db` to an accessible location.
 2. Set up your Anki with the new note type as above.
 3. Run `convert.py`. Use `--help` for usage information.
-4. Import `import.tsv` in Anki, pick the note type you made, and allow HTML in fields.
+4. Import `import.csv` in Anki, pick comma as the field separator, pick the note type you made, and allow HTML in fields.
 
 ![Import Dialog](anki_import.png)
 ## --help
 ```
-usage: convert.py [-h] [--log {debug,info,warning,error,critical}] [-k KEY] [-o OUTFILE] [-d /path/to/vocab.db] [-f epoch_time_in_milli] {list,l} ...
+usage: convert.py [-h] [--log {debug,info,warning,error,critical}] [-k KEY] [-o OUTFILE] [-d /path/to/vocab.db]
+                  [-t /path/to/last_timestamp.txt]
+                  {list,l} ...
 
-Converts vocab.db from Kindle into a format Anki accepts. Refer to https://github.com/MrShiister/Convert-Kindle-Vocab-to-Anki for full details.
+Converts vocab.db from Kindle into a format Anki accepts. Refer to https://github.com/MrShiister/Convert-Kindle-Vocab-to-Anki for full
+details.
 
 positional arguments:
   {list,l}
@@ -101,31 +104,34 @@ options:
                         Path to outfile
   -d /path/to/vocab.db, --vocabdb /path/to/vocab.db
                         Path to vocab.db
-  -f epoch_time_in_milli, --after epoch_time_in_milli
-                        Only find words since the specified Epoch timestamp in milliseconds (13 digits). Useful if you have already used this previously and only want to import new words. e.g. 1571009240989
-```
-```
-usage: convert.py list [-h] [word ...]
+  -t /path/to/last_timestamp.txt, --timestamp-file /path/to/last_timestamp.txt
+                        Path to file of the record the timestamp of last entry captured from vocab.db. This is used to record the last
+                        time you ran this script, so you can filter to extract new words from the same database without extra effort.
+                        Specify a non-existent file to ignore filter.
 
-positional arguments:
-  word        Space-separated words to search for the definitions. Use quotes for words with spaces. Leave blank to see sample.
 ```
 ## Example Usage
 ```sh
-[me@mycom anki]$ python3 convert.py -d ./vocabs/vocab.db -o ./imports/import.tsv
-[*]     INFO: Searching all words since 2021-05-02 23:45:28.551000: 420 words
-[*]  WARNING: taxidermied: Definition not found. Searching taxidermies instead...
+[me@mycom anki]$ ./convert.py -o ./Anki/Kindle_Vocab.csv -d ./Anki/vocab.db                                  ─╯
+[*]     INFO: Writing to ./Anki/Kindle_Vocab.csv all words since 2022-09-24 17:48:48.312000: 191 words
+[*]  WARNING: bollocking: Definition not found. Searching blocking instead...
+[*]  WARNING: blagged: Definition not found. Searching blogged instead...
+[*]  WARNING: lairy: Definition not found. Searching laired instead...
+[*]  WARNING: bollockings: Definition not found. Searching blackings instead...
+[*]  WARNING: dobbed: Definition not found. Searching dabbed instead...
+[*]  WARNING: parp: Definition not found. Searching par instead...
+[*]  WARNING: missish: Definition not found. Searching missis instead...
+[*]  WARNING: dropt: Definition not found. Searching drop instead...
+[*]     INFO: Writing timestamp of the final entry into ./last_timestamp.txt: 1682322892491
 ```
 ## Additional Details
-- The script has a `list` subcommand that enables you to input a list of words to search the API instead of reading from a database.
+- The script has a `list` subcommand that enables you to input a list of words to search the Merriam-Webster API instead of reading from a database.
 
 - The API does not contain information for all words. If the definition of a word cannot be found, a warning is printed, and the closest substitute is searched instead. If no substitutes as available, only the `Word` field will be filled, leaving the rest blank. Run `convert.py list` to see a sample.
 
-- You may want to use the `list` subcommand after you find the correct words. It will append to the `.tsv` file.
+- If the substitute word is wrong, you may want to use the `list` subcommand after you find the correct replacements. It will append to your `.csv` outfile.
 
-- If you have imported Kindle vocabs into Anki before, you may want to use `-f` to filter words by timestamp via the SQL query. You can get this timestamp by opening the `LOOKUPS` table in the database. I considered implementing it by searching for a word instead of a timestamp, but it gets complicated if the word appears multiple times in the table.
-
-- The `-f` flag is optional if you intend to import into Anki with the "Ignore lines where first field matches existing note" option.
+- The `last_timestamped.txt` file tracks the timestamp of the last vocab that was processed by this script. This helps to minimise duplicates by only searching words after the mentioned timestamp when you use this script again on the same database.
 ## Bulk Editing Your Anki Database When You Suck At SQL
 It is possible to edit all your cards in bulk with the Anki Desktop client and a database editor.
 1. Backup your Anki database file in `%AppData%\Anki2\User\collection.anki2`.

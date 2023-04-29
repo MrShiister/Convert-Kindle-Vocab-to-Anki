@@ -1,3 +1,5 @@
 *.db
 .vscode
 *.tsv
+*.code-workspace
+last_timestamp.txt
