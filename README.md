@@ -4,12 +4,13 @@ The purpose of this project is for importing the vocabs you learned from your Ki
 
 In particular, this script converts `vocab.db` into a format Anki can understand and import.
 
-| ![Front of the card](anki_front.png) | ![Hover to reveal example sentence](anki_front_hover.png) | ![Back of the card](anki_back.png) |
-| ------------------------------------ | --------------------------------------------------------- | ---------------------------------- |
-| Front of the card                    | Hover to reveal example sentence                          | Back of the card                   |
+| ![Front of the card](/doc/anki_front.png) | ![Hover to reveal example sentence](doc/anki_front_hover.png) | ![Back of the card](doc/anki_back.png) |
+|:---:|:---:|:---:|
+| Front of the card | Hover to reveal example sentence | Back of the card |
 
+## How it works
 ### In Kindle
-Your Kindle records down each word you highlight to view its definition, and you can review them in Kindle's in-built Vocab Builder. These words are written into the database `kindle:/system/vocabulary/vocab.db`, specifically in the `LOOKUPS` database table. The word ID and usage of the word are cross-referenced to the `WORDS` database table.
+Your Kindle records down each word you highlight to view its definition, and you can review them in Kindle's in-built Vocab Builder. These words are written into the database `kindle://system/vocabulary/vocab.db`, specifically in the `LOOKUPS` database table. The word ID and usage of the word are cross-referenced to the `WORDS` database table.
 
 ### In Anki
 Create a new note type for Anki for the import.
@@ -18,9 +19,9 @@ Create a new note type for Anki for the import.
 
 |Order|Field Name|Description|
 |:---:|:---------|:------|
-|1    |Word      |The Vocab, which is not necessary the word you highlighted|
+|1    |Word      |Word entry as in the Merriam-Webster dictionary|
 |2    |Pronunciation |Merriam-Webster's technical representation of [pronunciation](https://www.merriam-webster.com/assets/mw/static/pdf/help/guide-to-pronunciation.pdf)|
-|3    |Example Sentence|The sentence where the word was used|
+|3    |Example Sentence|The sentence where the word was highlighted|
 |4    |Meaning   |Definition(s) of the word|
 
 3. In the `Cards...` option, the card templates are as follows (copy and paste them).
@@ -73,16 +74,17 @@ Create a new note type for Anki for the import.
 `Word` and `Example Sentence` are extracted from the Kindle database file;
 `Phonetics` and `Meaning` are queried using [Merriam-Websters' API](https://dictionaryapi.com/products/json).
 
-The script takes the ID of the word from `LOOKUPS` to find the actual word and its context from `WORDS`, queries the API for phonetics and meaning, and writes the 4 fields, tab-separated. However, Anki does not follow the proper format of a `.tsv` file as quotes are taken as is without escaping.
+The script takes the ID of the word from `LOOKUPS` to find the actual word and its context from `WORDS`, queries the API for phonetics and meaning, and writes the 4 fields to a comma-separated values (CSV) file.
 
 ## How to use
-1. Copy your Kindle database file `kindle:/system/vocabulary/vocab.db` to an accessible location.
-2. Set up your Anki with the new note type as above.
-3. Run `convert.py`. Use `--help` for usage information.
-4. Import `import.csv` in Anki, pick comma as the field separator, pick the note type you made, and allow HTML in fields.
+1. Install Python 3.
+2. Copy your Kindle database file `kindle://system/vocabulary/vocab.db` to an accessible location.
+3. Set up your Anki with the new note type as above.
+4. Run `./convert.py` with Python 3. Use `--help` for usage information.
+5. Import `import.csv` in Anki, pick comma as the field separator, pick the note type you made, and allow HTML in fields.
 
-![Import Dialog](anki_import.png)
-## --help
+![Import Dialog](doc/anki_import.png)
+### --help
 ```
 usage: convert.py [-h] [--log {debug,info,warning,error,critical}] [-k KEY] [-o OUTFILE] [-d /path/to/vocab.db]
                   [-t /path/to/last_timestamp.txt]
@@ -112,7 +114,7 @@ options:
 ```
 ## Example Usage
 ```sh
-[me@mycom anki]$ ./convert.py -o ./Anki/Kindle_Vocab.csv -d ./Anki/vocab.db                                  ─╯
+[me@mycom anki]$ ./convert.py -o ./Anki/Kindle_Vocab.csv -d ./Anki/vocab.db
 [*]     INFO: Writing to ./Anki/Kindle_Vocab.csv all words since 2022-09-24 17:48:48.312000: 191 words
 [*]  WARNING: bollocking: Definition not found. Searching blocking instead...
 [*]  WARNING: blagged: Definition not found. Searching blogged instead...
@@ -125,9 +127,9 @@ options:
 [*]     INFO: Writing timestamp of the final entry into ./last_timestamp.txt: 1682322892491
 ```
 ## Additional Details
-- The script has a `list` subcommand that enables you to input a list of words to search the Merriam-Webster API instead of reading from a database.
+- The script has a `list` subcommand that enables you to input a list of words (to search the Merriam-Webster API) instead of reading from a database.
 
-- The API does not contain information for all words. If the definition of a word cannot be found, a warning is printed, and the closest substitute is searched instead. If no substitutes as available, only the `Word` field will be filled, leaving the rest blank. Run `convert.py list` to see a sample.
+- The API does not contain information for all words. If the definition of a word cannot be found, a warning is printed, and the closest substitute is searched instead. If no substitutes as available, only the `Word` field will be filled, leaving the rest blank. Run `./convert.py list` to see a sample.
 
 - If the substitute word is wrong, you may want to use the `list` subcommand after you find the correct replacements. It will append to your `.csv` outfile.
 
@@ -157,3 +159,5 @@ set data = "" where data IS NULL;
 - [x] Automate extracting tables from database
 - [x] Using Merriam-webster dictionary's API
 - [x] Parse the list for new vocabs only
+- [ ] Consider using Built-in dictionary
+- [ ] Turn into an Anki plugin
