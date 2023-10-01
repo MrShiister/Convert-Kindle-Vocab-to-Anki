@@ -81,7 +81,7 @@ The script takes the ID of the word from `LOOKUPS` to find the actual word and i
 2. Copy your Kindle database file `kindle://system/vocabulary/vocab.db` to an accessible location.
 3. Set up your Anki with the new note type as above.
 4. Run `./convert.py` with Python 3. Use `--help` for usage information.
-5. Import `import.csv` in Anki, pick comma as the field separator, pick the note type you made, and allow HTML in fields.
+5. Import `import.csv` in Anki, pick **comma** as the field separator, pick the note type you made, and **allow HTML in fields**.
 
 ![Import Dialog](doc/anki_import.png)
 ### --help
